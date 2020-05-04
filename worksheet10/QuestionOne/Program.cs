@@ -8,20 +8,20 @@ namespace QuestionOne
 
         static void Main(string[] args)
         {
-             
 
-            Console.WriteLine("Please enter weight in kg: ");
-            string w = Console.ReadLine();
-            Console.WriteLine("Please enter height in meters: ");
-            string h = Console.ReadLine();
-          
+
+            
+            Func<string> read = () => Console.ReadLine();
+            var tuple = TestTakeInput(read, read);
             var func = CalcBmi();
-            Console.WriteLine(PrintRes(func(Convert.ToDouble(w), Convert.ToDouble(h))));
+            Console.WriteLine(PrintRes(func(tuple.w, tuple.h)));
 
 
         }
 
-        public static string PrintRes(double? bmi) => !(bmi < 18.5 || bmi >= 25) ? "Healthy weight" : ((bmi < 18.5 ? "Underweight" : "Overweight"));
+        
+
+        public static string PrintRes(double bmi) => !(bmi < 18.5 || bmi >= 25) ? "Healthy weight" : ((bmi < 18.5 ? "Underweight" : "Overweight"));
 
            public static string PrintResults(Bmi bmi) => !(bmi.CalcBmi() < 18.5 || bmi.CalcBmi() >= 25) ? "Healthy weight" : ((bmi.CalcBmi() < 18.5 ? "Underweight" : "Overweight"));
 
@@ -37,17 +37,22 @@ namespace QuestionOne
 
         }
 
-        public static (double w, double h) TakeInput(string weight, string height)
+      
+
+        public static (double w, double h) TestTakeInput(Func<string> funcW, Func<string> funcH)
         {
-            
+            Console.WriteLine("Please enter weight in kg: ");
+            string weight = funcW();
+            Console.WriteLine("Please enter height in meters: ");
+            string height = funcH();
+
             return (w: Convert.ToDouble(weight), h: Convert.ToDouble(height));
-           
+
 
         }
 
 
-      //  Bmi bmi = new Bmi(Convert.ToDouble(w), Convert.ToDouble(h));
-      //  var func = CalcBmi();
+        
 
 
 
@@ -77,40 +82,4 @@ namespace QuestionOne
     }
 }
 
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-
  
-
-//namespace QuestionOneTest
-//{
-
-
-//    [TestClass]
-//    class Program
-//    {
-
-//        [TestMethod]
-//        public void TestCalcBmi()
-//        {
-
-//            //  var tuple = TestTakeInput("73", "1");
-//            //  QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(tuple.w, tuple.h);
-
-//            QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(73, 1);
-//            Assert.AreEqual("Healthy weiht", QuestionOne.Program.PrintResults(bmi));
-
-//        }
-
-//        //  [TestMethod]
-//        //public (double w, double h) TestTakeInput(string weight, string height)
-//        //{
-//        //    return QuestionOne.Program.TakeInput(weight, height);
-
-
-//        //}
-
-
-
-
-//    }
-//}

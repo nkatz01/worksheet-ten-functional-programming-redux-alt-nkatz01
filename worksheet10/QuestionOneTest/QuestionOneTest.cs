@@ -1,18 +1,21 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using System;
+ 
 namespace QuestionOneTest
 {
     [TestClass]
-    public class UnitTest1
+    public class QuestionOneTest
     {
       
+
+
 
         [TestMethod]
         public void TestCalcBmiNormal()
         {
-
-            var tuple = TestTakeInput("73", "1.76");
-              QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(tuple.w, tuple.h);
+        
+          
+              QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(73, 1.76);
             Assert.AreEqual("Healthy weight", QuestionOne.Program.PrintResults(bmi));
 
             
@@ -23,8 +26,8 @@ namespace QuestionOneTest
         public void TestCalcBmiOverweight()
         {
 
-            var tuple = TestTakeInput("73", "1");
-            QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(tuple.w, tuple.h);
+           
+            QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(73, 1);
             Assert.AreEqual("Overweight", QuestionOne.Program.PrintResults(bmi));
 
             
@@ -35,8 +38,8 @@ namespace QuestionOneTest
         public void TestCalcBmiUnderweight()
         {
 
-            var tuple = TestTakeInput("50", "1.76");
-            QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(tuple.w, tuple.h);
+          
+            QuestionOne.Program.Bmi bmi = new QuestionOne.Program.Bmi(50, 1.76);
             Assert.AreEqual("Underweight", QuestionOne.Program.PrintResults(bmi));
 
             
@@ -44,11 +47,16 @@ namespace QuestionOneTest
         }
 
         [TestMethod]
-        public (double w, double h) TestTakeInput(string weight, string height)
+        public void TestTakeInput()
         {
-            return QuestionOne.Program.TakeInput(weight, height);
-
+            Func<string> readW = () => "73"; 
+            Func<string> readH = () => "1.76";
+           (double,double) tuple = QuestionOne.Program.TestTakeInput(readW, readH);
+            Assert.AreEqual(tuple.Item1, 73.0);
+            Assert.AreEqual(tuple.Item2, 1.76);
 
         }
+
+        
     }
 }

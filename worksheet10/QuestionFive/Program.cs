@@ -11,7 +11,7 @@ namespace QuestionFive
           var ob =   AC.Get<QuestionFive.Class1> ("myClass");
            //  Console.WriteLine(ob);
 
-            var ob2 = AC.Get("myClass1",   new Class1());
+            var ob2 = AC.Get("myClass2",   new Class1());
             Console.WriteLine(ob2);
         }
     }

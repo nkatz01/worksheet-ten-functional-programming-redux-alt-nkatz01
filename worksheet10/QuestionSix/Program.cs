@@ -24,33 +24,37 @@ namespace QuestionSix
             myDict.Add("two", 2);
             myDict.Add("three", 3);
             Console.WriteLine("({0})", string.Join(",", myDict));
-            var result2 = myDict.MySelect1<string, int,string ,int>((pair) =>    new KeyValuePair<string,int>("number " + pair.Key  , pair.Value + 1));
-            Console.WriteLine("({0})", string.Join(",", result2));
+            //var result2 = myDict.MySelect1<string, int,string ,int>((pair) =>    new KeyValuePair<string,int>("number " + pair.Key  , pair.Value + 1));
+            //Console.WriteLine("({0})", string.Join(",", result2));
+
+            Console.WriteLine();
+            var result3 = myDict.MySelect<KeyValuePair<string, int>, KeyValuePair<string, int>>((pair) => new KeyValuePair<string, int>("number " + pair.Key, pair.Value + 1));
+            Console.WriteLine("({0})", string.Join(",", result3));
         }
     }
 
-    public static class DictMethod
-    {
+    //public static class DictMethod
+    //{
 
-        public static IEnumerable<KeyValuePair<TC, TD>> MySelect1<  TA, TB ,TC,TD>(this IEnumerable<KeyValuePair<TA,TB>> set, Func<KeyValuePair<TA, TB> , KeyValuePair<TC, TD>> map)
-        {
-            var t = set.GetType();
-            IEnumerable<KeyValuePair<TC, TD>> NewSet = Activator.CreateInstance(t) as IEnumerable<KeyValuePair<TC, TD>>;
+    //    public static IEnumerable<KeyValuePair<TC, TD>> MySelect1<  TA, TB ,TC,TD>(this IEnumerable<KeyValuePair<TA,TB>> set, Func<KeyValuePair<TA, TB> , KeyValuePair<TC, TD>> map)
+    //    {
+    //        var t = set.GetType();
+    //        IEnumerable<KeyValuePair<TC, TD>> NewSet = Activator.CreateInstance(t) as IEnumerable<KeyValuePair<TC, TD>>;
 
-            if (set.Count() < 1)
-            {
+    //        if (set.Count() < 1)
+    //        {
 
-                return NewSet;
-            }
+    //            return NewSet;
+    //        }
 
-            foreach (KeyValuePair<TA, TB> item in set)
-            {
-                KeyValuePair<TC, TD> transformedItem = map(item);
-                NewSet = NewSet.Append(transformedItem);
-            }
-            return NewSet;
-        }
-    }
+    //        foreach (KeyValuePair<TA, TB> item in set)
+    //        {
+    //            KeyValuePair<TC, TD> transformedItem = map(item);
+    //            NewSet = NewSet.Append(transformedItem);
+    //        }
+    //        return NewSet;
+    //    }
+    //}
 
 
 

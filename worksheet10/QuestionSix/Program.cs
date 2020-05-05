@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Configuration;
 
 namespace QuestionSix
 {
@@ -11,41 +12,73 @@ namespace QuestionSix
             Console.WriteLine("QuestionSix");
             ISet<int> myHashSet = new HashSet<int>();
             myHashSet.Add(1);
-            Console.WriteLine("({0})", string.Join(",", myHashSet)  );
-           var result = myHashSet.Select(x => x + 1);
+            myHashSet.Add(2);
+            myHashSet.Add(3);
+            Console.WriteLine("({0})", string.Join(",", myHashSet));
+            var result = myHashSet.MySelect(x => x + 1);
             Console.WriteLine("({0})", string.Join(",", result));
+            Console.WriteLine();
+
+            IDictionary<string, int> myDict = new Dictionary<string, int>();
+            myDict.Add("one", 1);
+            myDict.Add("two", 2);
+            myDict.Add("three", 3);
+            Console.WriteLine("({0})", string.Join(",", myDict));
+            var result2 = myDict.MySelect1<string, int,string ,int>((pair) =>    new KeyValuePair<string,int>("number " + pair.Key  , pair.Value + 1));
+            Console.WriteLine("({0})", string.Join(",", result2));
         }
     }
 
-    public static class SetMethod
+    public static class DictMethod
     {
-        /// <summary>
-        /// Transforms the contents of a Box, in a user defined way
-        /// </summary>
-        /// <typeparam name="TA">The type of the thing in the box to start with</typeparam>
-        /// <typeparam name="TB">The result type that the transforming function to transform to</typeparam>
-        /// <param name="box">The Box that the extension method will work on</param>
-        /// <param name="map">User defined way to transform the contents of the box</param>
-        /// <returns>The results of the transformation, put back into a box</returns>
-        public static ISet<TB> Select<TA, TB>(this ISet<TA> set, Func<TA, TB> map)
+
+        public static IEnumerable<KeyValuePair<TC, TD>> MySelect1<  TA, TB ,TC,TD>(this IEnumerable<KeyValuePair<TA,TB>> set, Func<KeyValuePair<TA, TB> , KeyValuePair<TC, TD>> map)
         {
-            ISet<TB> NewSet = set as ISet<TB>;
-            NewSet.Clear();
-            // Validate/Check if box is valid(not empty) and if so, run the transformation function on it, otherwise don't
-            if (set.Count<1)
+            var t = set.GetType();
+            IEnumerable<KeyValuePair<TC, TD>> NewSet = Activator.CreateInstance(t) as IEnumerable<KeyValuePair<TC, TD>>;
+
+            if (set.Count() < 1)
             {
-                // No, return the empty box
-                return new SortedSet<TB>();
+
+                return NewSet;
             }
 
-            // Extract the item from the Box and run the provided transform function ie run the map() function
-            // ie map is the name of the transformation function the user provided.
-            foreach (TA item in set)
+            foreach (KeyValuePair<TA, TB> item in set)
             {
-                TB transformedItem = map(item);
-                NewSet.Add(transformedItem);
+                KeyValuePair<TC, TD> transformedItem = map(item);
+                NewSet = NewSet.Append(transformedItem);
             }
             return NewSet;
+        }
+    }
+
+
+
+    public static class SetMethod
+    {
+
+        public static IEnumerable<TB> MySelect<TA, TB>(this IEnumerable<TA> Ienum, Func<TA, TB> map)
+        {
+            var t = Ienum.GetType();
+            IEnumerable<TB> NewIEnumerable = Activator.CreateInstance(t) as IEnumerable<TB>;
+
+            if (Ienum.Count() < 1)
+            {
+
+                return NewIEnumerable;
+            }
+
+            foreach (TA item in Ienum)
+            {
+                
+                TB transformedItem = map(item);
+               
+
+                NewIEnumerable = NewIEnumerable.Append( transformedItem);
+               
+            }
+           
+            return NewIEnumerable;
         }
     }
 }

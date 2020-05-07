@@ -31,7 +31,7 @@ namespace QuestionSeven
 
     }
 
-    public static class SetMethod
+    public static class MapAndOptOnIenum
     {
 
         public static Option<IEnumerable<TB>> MySelect<TA, TB>(this IEnumerable<TA> Ienum,   Func<IEnumerable<TA>, IEnumerable<TB>> map) 

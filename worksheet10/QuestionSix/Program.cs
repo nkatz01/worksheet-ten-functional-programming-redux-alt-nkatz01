@@ -9,6 +9,7 @@ namespace QuestionSix
     {
         static void Main(string[] args)
         {
+            
             Console.WriteLine("QuestionSix");
             ISet<int> myHashSet = new HashSet<int>();
             myHashSet.Add(1);

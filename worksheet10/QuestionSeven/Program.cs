@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QuestionSeven
 {
@@ -9,20 +10,18 @@ namespace QuestionSeven
     {
         static void Main(string[] args)
         {
-            Option<int> optionalInteger = 34; // note we can just assign it straight away
-            optionalInteger = Option<int>.Some(34); // save as above. Shown just for demonstration purposes
-            optionalInteger = Option<int>.None;
-            //  optionalInteger = null; //Options effectively eliminate nulls in your code.
-
-
-            var result1 = Add5ToIt(optionalInteger);
-            
-
-            Console.WriteLine($"The result A is '{result1} ");
+            ISet<int> myHashSet = new HashSet<int>();
+            myHashSet.Add(1);
+            myHashSet.Add(2);
+            myHashSet.Add(3);
+            Console.WriteLine("({0})", string.Join(",", myHashSet));
+            var result = myHashSet.MySelect( x => x + 1);
+            Console.WriteLine("({0})", string.Join(",", result));
+            Console.WriteLine();
 
 
         }
-        public static IEnumerable<TB> MySelect<TA, TB>(this IEnumerable<TA> Ienum, Func<TA, TB> map)
+        public static Option<IEnumerable<TB>> MySelect<TA, TB>(this IEnumerable<TA> Ienum, Func<IEnumerable<TB>, Option<IEnumerable<TB>>> Return, Func<TA, TB> map)
         {
             var t = Ienum.GetType();
             IEnumerable<TB> NewIEnumerable = Activator.CreateInstance(t) as IEnumerable<TB>;
@@ -30,20 +29,21 @@ namespace QuestionSeven
             if (Ienum.Count() < 1)
             {
 
-                return NewIEnumerable;
+                var none =  Return(NewIEnumerable);
+                return none;
             }
 
             foreach (TA item in Ienum)
             {
 
                 TB transformedItem = map(item);
-
+              
 
                 NewIEnumerable = NewIEnumerable.Append(transformedItem);
 
             }
-
-            return NewIEnumerable;
+            var NewIEnumerableOpt = Return(NewIEnumerable);
+            return NewIEnumerableOpt;
         }
     }
 }

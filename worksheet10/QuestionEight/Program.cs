@@ -82,7 +82,7 @@ namespace QuestionEight
 
         }
 
-
+        //maybe come back later and render this method generic like so
         //public static Option<WorkPermit> MySelect<TA>(this IEnumerable<TA> Ienum, Func<TA, bool> pred, Program.MyDelegate<TA> extractEmp)
         //{
 

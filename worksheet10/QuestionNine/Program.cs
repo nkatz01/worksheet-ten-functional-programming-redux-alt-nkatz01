@@ -1,42 +1,84 @@
 ﻿using LanguageExt;
+using LanguageExt.SomeHelp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using static LanguageExt.Prelude;
 
 namespace QuestionNine
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
-
-            Employee personA = new Employee(DateTime.Today, DateTime.Today.AddYears(2));//joined today, leaving in 2 yrs
+            Employee personA = new Employee();
+            personA.ChangeJoinedOn(DateTime.Today);
+            personA.ChangeLeftOn(DateTime.Today.AddYears(2));//joined today, leaving in 2 yrs  
             personA.Id = "person1";
-            personA.Id = "person1";
-            Employee personB = new Employee(DateTime.Today.AddYears(-1), DateTime.Today.AddYears(1));//joined last yr leaving in 1 yr
-            personB.Id = "person2";
-            personB.Id = "person2";
-            Employee personC = new Employee(DateTime.Today.AddYears(-2), DateTime.Today.AddDays(-1));//joined 2 yrs ago, left yesterday
-            personB.Id = "person3";
-            personB.Id = "person3";
-            //  personA.JoinedOn = DateTime.Today.AddYears(1);
-            //  personA.JoinedOn = DateTime.Today ;
-            Console.WriteLine($"{personA.JoinedOn}");
-           // Employee personB = new Employee("person2", DateTime.Today.AddDays(-1));
-           // Console.WriteLine($"{personA.Id} is employed from {personA.WorkPermit.IssueDate} to {personA.WorkPermit.ValidUntil}");
-           // Console.WriteLine($"{personB.Id} is employed from {personB.WorkPermit.IssueDate} to {personB.WorkPermit.ValidUntil}");
 
-          //  IEnumerable<Employee> lst = new List<Employee>{ personA, personB };
-             
-            Console.WriteLine("Hello World!");
+            WorkPermit WorkPermit = new WorkPermit();
+            WorkPermit.Number = "1111";
+            WorkPermit.Expiry = DateTime.Today.AddYears(2);
+            personA.WorkPermit = WorkPermit;
+            Console.WriteLine(personA.WorkPermit);
+
+            Employee personB = new Employee();
+            personB.ChangeJoinedOn(DateTime.Today.AddYears(-1));
+            personB.ChangeLeftOn(DateTime.Today.AddDays(-1)); //joined last yr left yesterday
+            personB.Id = "person2";
+            WorkPermit = new WorkPermit();
+            WorkPermit.Number = "2222";
+            WorkPermit.Expiry = DateTime.Today.AddYears(1);
+            personB.WorkPermit = WorkPermit;
+
+            Employee personC = new Employee();
+            personC.ChangeJoinedOn(DateTime.Today.AddYears(-2));
+            personC.ChangeLeftOn(DateTime.Today.AddDays(-1)); //joined 2 yrs ago, left yesterday
+            personC.Id = "person3";
+            WorkPermit = new WorkPermit();
+            WorkPermit.Number = "3333";
+            WorkPermit.Expiry = DateTime.Today.AddYears(-2);
+            personC.WorkPermit = WorkPermit;
+
+            Console.WriteLine($"{personA.Id} is employed from {personA.JoinedOn} to {personA.LeftOn}");
+            Console.WriteLine($"{personB.Id} is employed from {personB.JoinedOn} to {personB.LeftOn}");
+            Console.WriteLine($"{personC.Id} is employed from {personC.JoinedOn} to {personC.LeftOn}");
+
+            IEnumerable<Employee> lst = new List<Employee> { personA, personB, personC };
+            Console.WriteLine(AverageYearsWorkedAtTheCompany(lst));
+
+
+
         }
+
+        static double AverageYearsWorkedAtTheCompany(IEnumerable<Employee> employees)
+        {
+
+            var employeeList = employees.Map(x => x.LeftOn.CompareTo(DateTime.Today) == -1 ? Some((x.LeftOn - x.JoinedOn).TotalDays) : None);
+            double numberOfTotalDaysAllEmps = 0;
+            int numberOfRetiredEmps = 0;
+            foreach (var item in employeeList)
+            {
+                if (item.IsSome)
+                {
+                    numberOfTotalDaysAllEmps += item.Head();
+                    numberOfRetiredEmps++;
+                }
+            }
+
+            return (numberOfTotalDaysAllEmps / 365) / numberOfRetiredEmps;
+        }
+
+        public static IEnumerable<R> Map<T, R>(this IEnumerable<T> ts, Func<T, R> func)
+           => ts.Bind(t => List(func(t)));
+
+
+
     }
 
-    //static double AverageYearsWorkedAtTheCompany(List<Employee> employees)
-    //{
-    //    throw new NotAppendableException();
-    //}
 
-    //...
+
+
 
     public struct WorkPermit
     {
@@ -48,7 +90,6 @@ namespace QuestionNine
     {
         public string Id { get; set; }
         public Option<WorkPermit> WorkPermit { get; set; }
-         public DateTime JoinedOn { get;   }
 
         public Employee(DateTime joinedon, DateTime lefton)
         {
@@ -56,19 +97,35 @@ namespace QuestionNine
             LeftOn = lefton;
 
         }
+        public Employee() : this(default(DateTime), default(DateTime)) { }
 
-        //private DateTime _joindOn;
-        //public DateTime JoinedOn
-        //{  set
-        //    {
-        //        if (_joindOn ==null)
-        //        _joindOn = value;
-        //    }
+        private DateTime _joindOn;
+        private DateTime _leftOn;
+        public DateTime JoinedOn
+        {
+            private set
+            {
 
-        //    get => _joindOn;
-        //}
+                _joindOn = value;
+            }
+
+            get => _joindOn;
+        }
+        public DateTime LeftOn
+        {
+            private set
+            {
+
+                _leftOn = value;
+            }
+
+            get => _leftOn;
+        }
+
+        public void ChangeJoinedOn(DateTime jonedOn) { JoinedOn = jonedOn; }
+        public void ChangeLeftOn(DateTime leftOn) { LeftOn = leftOn; }
 
 
-        public Option<DateTime> LeftOn { get; }
+
     }
 }

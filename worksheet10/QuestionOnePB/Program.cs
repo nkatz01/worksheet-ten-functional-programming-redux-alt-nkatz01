@@ -82,8 +82,9 @@ namespace QuestionOnePB
         public SinglyLinkedList<T> RemoveAt(int i)
          => new SinglyLinkedList<T>(RecourseRemoveAt(i,  head));
 
-        private Node<T> RecourseRemoveAt(int i, Option<Node<T>> node)
-        => i == 0 || node.Head().Next.Head().Next.IsNone ? new Node<T>(node.Head().Next.Head().Data, node.Head().Next.Head().Next) : new Node<T>(node.Head().Data, RecourseRemoveAt(i - 1 , node.Head().Next));
+        private Option<Node<T>> RecourseRemoveAt(int i, Option<Node<T>> node)
+        => i == 0 || node.IsNone ? node.Bind(n => n.Next): 
+           Some(new Node<T>(node.Head().Data, RecourseRemoveAt(i - 1 , node.Head().Next)));
 
 
        public SinglyLinkedList<T> TakeWhile( Func<T, bool> pred)
@@ -97,7 +98,7 @@ namespace QuestionOnePB
                 => new SinglyLinkedList<T>(DropWhileRecourse(head, pred));
 
         private Option<Node<T>> DropWhileRecourse(Option<Node<T>> node, Func<T, bool> pred)
-        =>  !pred(node.Head().Data) || node.Head().Next.Head().Next.IsNone ? Some(new Node<T>(node.Head().Data, node.Head().Next)) : DropWhileRecourse(node.Head().Next, pred);
+        =>  !pred(node.Head().Data) || node.IsNone ? node : DropWhileRecourse(node.Head().Next, pred);
 
 
 

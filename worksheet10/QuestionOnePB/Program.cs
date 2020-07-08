@@ -28,11 +28,7 @@ namespace QuestionOnePB
         }
     }
 
-    //public class SinglyLinkedListExt<T>
-    //{
-
-
-    //}
+     
     public class Node<T> //https://www.c-sharpcorner.com/article/linked-list-implementation-in-c-sharp/
     {
         public T Data { get; }
